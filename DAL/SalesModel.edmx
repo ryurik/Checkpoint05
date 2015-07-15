@@ -11,6 +11,16 @@
           <EntitySet Name="FileLogs" EntityType="SalesModel.Store.FileLogs" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Managers" EntityType="SalesModel.Store.Managers" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Sales" EntityType="SalesModel.Store.Sales" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="vwSales" EntityType="SalesModel.Store.vwSales" store:Type="Views" store:Schema="dbo" store:Name="vwSales">
+            <DefiningQuery>SELECT 
+      [vwSales].[Id] AS [Id], 
+      [vwSales].[Date] AS [Date], 
+      [vwSales].[Article] AS [Article], 
+      [vwSales].[Manager] AS [Manager], 
+      [vwSales].[ClientName] AS [ClientName], 
+      [vwSales].[Sum] AS [Sum]
+      FROM [dbo].[vwSales] AS [vwSales]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_ArticleSale" Association="SalesModel.Store.FK_ArticleSale">
             <End Role="Articles" EntitySet="Articles" />
             <End Role="Sales" EntitySet="Sales" />
@@ -72,6 +82,25 @@
           <Property Name="FileLog_Id" Type="int" Nullable="false" />
           <Property Name="AddTime" Type="datetime" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'Sales.dbo.vwSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="vwSales">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Date" />
+            <PropertyRef Name="Article" />
+            <PropertyRef Name="Manager" />
+            <PropertyRef Name="ClientName" />
+            <PropertyRef Name="Sum" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Article" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Manager" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ClientName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Sum" Type="decimal" Nullable="false" />
+        </EntityType>
         <Association Name="FK_ArticleSale">
           <End Role="Articles" Type="SalesModel.Store.Articles" Multiplicity="1" />
           <End Role="Sales" Type="SalesModel.Store.Sales" Multiplicity="*" />
@@ -120,6 +149,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="SP_CleanDB" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
@@ -131,6 +161,7 @@
           <EntitySet Name="FileLogs" EntityType="SalesModel.FileLogs" />
           <EntitySet Name="Managers" EntityType="SalesModel.Managers" />
           <EntitySet Name="Sales" EntityType="SalesModel.Sales" />
+          <EntitySet Name="vwSales" EntityType="SalesModel.vwSales" />
           <AssociationSet Name="FK_ArticleSale" Association="SalesModel.FK_ArticleSale">
             <End Role="Articles" EntitySet="Articles" />
             <End Role="Sales" EntitySet="Sales" />
@@ -147,6 +178,7 @@
             <End Role="Managers" EntitySet="Managers" />
             <End Role="FileLogs" EntitySet="FileLogs" />
           </AssociationSet>
+          <FunctionImport Name="SP_CleanDB" />
         </EntityContainer>
         <EntityType Name="Articles">
           <Key>
@@ -199,6 +231,22 @@
           <NavigationProperty Name="Articles" Relationship="SalesModel.FK_ArticleSale" FromRole="Sales" ToRole="Articles" />
           <NavigationProperty Name="Clients" Relationship="SalesModel.FK_ClientSaleSet" FromRole="Sales" ToRole="Clients" />
           <NavigationProperty Name="FileLogs" Relationship="SalesModel.FK_FilesLogSaleSet" FromRole="Sales" ToRole="FileLogs" />
+        </EntityType>
+        <EntityType Name="vwSales">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Date" />
+            <PropertyRef Name="Article" />
+            <PropertyRef Name="Manager" />
+            <PropertyRef Name="ClientName" />
+            <PropertyRef Name="Sum" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Article" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Manager" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="ClientName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Sum" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
         </EntityType>
         <Association Name="FK_ArticleSale">
           <End Role="Articles" Type="SalesModel.Articles" Multiplicity="1" />
@@ -303,6 +351,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="vwSales">
+            <EntityTypeMapping TypeName="SalesModel.vwSales">
+              <MappingFragment StoreEntitySet="vwSales">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Article" ColumnName="Article" />
+                <ScalarProperty Name="Manager" ColumnName="Manager" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="Sum" ColumnName="Sum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_CleanDB" FunctionName="SalesModel.Store.SP_CleanDB" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

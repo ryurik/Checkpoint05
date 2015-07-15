@@ -12,6 +12,9 @@ namespace DAL
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Objects;
+    using System.Data.Objects.DataClasses;
+    using System.Linq;
     
     public partial class SalesEntities : DbContext
     {
@@ -30,5 +33,11 @@ namespace DAL
         public DbSet<FileLogs> FileLogs { get; set; }
         public DbSet<Managers> Managers { get; set; }
         public DbSet<Sales> Sales { get; set; }
+        public DbSet<vwSales> vwSales { get; set; }
+    
+        public virtual int SP_CleanDB()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_CleanDB");
+        }
     }
 }
